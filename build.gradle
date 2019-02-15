@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath fileTree(dir: "lib/classpath", include: '*.jar')
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+
+sourceCompatibility=1.8
+targetCompatibility=1.8
+
+jar {
+    baseName = 'simple-mpa'
+    version = '0.1.0'
+}
+
+war {
+    baseName = 'simple-mpa'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile fileTree(dir: "lib/compile", include: '*.jar')
+    providedCompile fileTree(dir: "lib/providedCompile", include: '*.jar')
+    providedRuntime fileTree(dir: "lib/providedRuntime", include: 'hsqldb-2.3.2.jar')
+}
+
