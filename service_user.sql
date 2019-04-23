@@ -15,7 +15,7 @@ create table if not exists service_user
 
 create table if not exists service_user_history
 (	id bigint not null,
- 	history_number varchar(20) not null,
+ 	history_number bigint not null,
 	insurer_number varchar(20) not null,
 	insured_number varchar(20) not null,
 	service_user_number varchar(6) not null,
@@ -34,10 +34,11 @@ create table if not exists service_user_history
 CREATE OR REPLACE FUNCTION service_user_trig_history() RETURNS trigger
   LANGUAGE plpgsql AS
 $$BEGIN
-  INSERT INTO public.service_history_user (
+  INSERT INTO public.service_user_history (
             id,
             insurer_number,
             insured_number,
+	    history_number,
             service_user_number,
             name,
             gender,
@@ -51,23 +52,24 @@ $$BEGIN
             insert_time
           )
           VALUES (
-            OLD.id,
-            'height',
-            '',
-            '1978/01/01',
-            'HaNoi',
-            '0331234568',
-            '2018/10/10',
-            '2018/04/04',
-            null,
-            6,
-            '0',
-            '0004',
-            '',
-            ''
-          );
-
-
+            NEW.id,
+            NEW.insurer_number,
+            NEW.insured_number,
+            (SELECT COALESCE(MAX(history_number), 0) + 1 from service_user_history where id = NEW.id),
+            NEW.service_user_number,
+            NEW.name,
+            NEW.gender,
+            NEW.birthday,
+            NEW.address,
+            NEW.phone_number,
+            NEW.care_period_start_date,
+            NEW.care_period_end_date,
+            NEW.profile_picture,
+            'SYSTEM',
+            now()
+          );	  
+  return NEW;
+  
 END;$$;
 
 CREATE TRIGGER service_user_trig_history BEFORE INSERT OR UPDATE ON service_user FOR EACH ROW
