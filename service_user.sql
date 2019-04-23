@@ -15,6 +15,7 @@ create table if not exists service_user
 
 create table if not exists service_user_history
 (	id bigint not null,
+ 	history_number varchar(20) not null,
 	insurer_number varchar(20) not null,
 	insured_number varchar(20) not null,
 	service_user_number varchar(6) not null,
